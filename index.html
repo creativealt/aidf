@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIDF — AI-Driven IDE Framework</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            200: '#99f6e4',
+                            300: '#5eead4',
+                            400: '#2dd4bf',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            900: '#134e4a',
+                        },
+                        zinc: {
+                            850: '#1f2023',
+                            900: '#18181b',
+                            950: '#09090b',
+                        }
+                    },
+                    borderRadius: {
+                        '4xl': '2rem',
+                        '5xl': '2.5rem',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'fade-in-up': 'fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-image:
+                radial-gradient(circle at 15% 50%, rgba(20, 184, 166, 0.08), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(99, 102, 241, 0.08), transparent 25%);
+            background-attachment: fixed;
+        }
+
+        .glass-panel {
+            background: rgba(24, 24, 27, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            box-shadow:
+                0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                0 2px 4px -1px rgba(0, 0, 0, 0.06),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-glass {
+            background: rgba(9, 9, 11, 0.7);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .text-glow {
+            text-shadow: 0 0 20px rgba(20, 184, 166, 0.3);
+        }
+
+        /* Smooth custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #09090b;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #27272a;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3f3f46;
+        }
+    </style>
+</head>
+
+<body class="bg-zinc-950 text-zinc-300 leading-relaxed antialiased selection:bg-brand-500/30 selection:text-brand-100">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 nav-glass transition-all duration-300">
+        <div class="max-w-6xl mx-auto px-6 h-20 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div
+                    class="w-8 h-8 rounded-full bg-gradient-to-br from-brand-400 to-indigo-500 flex items-center justify-center shadow-lg shadow-brand-500/20">
+                    <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                </div>
+                <span class="text-xl font-bold tracking-tight text-white">AIDF</span>
+            </div>
+            <div class="hidden md:flex space-x-1 lg:space-x-2">
+                <a href="#philosophy"
+                    class="px-4 py-2 rounded-full text-sm font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-all duration-200">Philosophy</a>
+                <a href="#layers"
+                    class="px-4 py-2 rounded-full text-sm font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-all duration-200">Agents</a>
+                <a href="#workflow"
+                    class="px-4 py-2 rounded-full text-sm font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-all duration-200">Workflow</a>
+                <a href="#tech-spec"
+                    class="px-4 py-2 rounded-full text-sm font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-all duration-200">Spec</a>
+            </div>
+            <a href="spec.html"
+                class="px-5 py-2.5 rounded-full bg-white text-zinc-950 text-sm font-semibold hover:bg-zinc-200 transition-colors shadow-lg shadow-white/5">
+                Our Spec
+            </a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="pt-40 pb-32 px-6 relative overflow-hidden">
+        <div class="max-w-4xl mx-auto text-center relative z-10 animate-fade-in-up">
+            <div
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-900/50 border border-zinc-800 backdrop-blur-sm mb-8">
+                <span class="flex h-2 w-2 rounded-full bg-brand-400 animate-pulse"></span>
+                <span class="text-xs font-medium text-zinc-300 tracking-wide uppercase">IDE-Native Autonomous
+                    System</span>
+            </div>
+
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-white mb-8 leading-[1.1]">
+                Your Team,<br>
+                <span
+                    class="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-white to-brand-300 text-glow">Inside
+                    Your IDE.</span>
+            </h1>
+
+            <p class="text-xl md:text-2xl text-zinc-400 max-w-2xl mx-auto leading-relaxed mb-12 font-light">
+                AIDF turns your editor into an autonomous product factory. <br class="hidden md:block">Planning, coding,
+                and shipping—all without context switching.
+            </p>
+
+            <div class="flex flex-wrap justify-center gap-3">
+                <div
+                    class="px-6 py-3 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 text-sm font-medium hover:border-brand-500/30 hover:text-brand-300 transition-all cursor-default">
+                    Cognitive Planning</div>
+                <div
+                    class="px-6 py-3 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 text-sm font-medium hover:border-brand-500/30 hover:text-brand-300 transition-all cursor-default">
+                    Autonomous Builds</div>
+                <div
+                    class="px-6 py-3 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 text-sm font-medium hover:border-brand-500/30 hover:text-brand-300 transition-all cursor-default">
+                    Full Verification</div>
+            </div>
+        </div>
+
+        <!-- Abstract Background Elements -->
+        <div
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-brand-500/5 rounded-full blur-3xl -z-10 animate-float">
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 pb-32 space-y-32">
+
+        <!-- Core Philosophy -->
+        <section id="philosophy" class="scroll-mt-32">
+            <div class="grid md:grid-cols-12 gap-12 items-start">
+                <div class="md:col-span-4 sticky top-32">
+                    <h2 class="text-4xl font-bold text-white mb-4">Philosophy</h2>
+                    <p class="text-zinc-400 text-lg leading-relaxed">
+                        Moving beyond CLI tools to a fully integrated, context-aware development environment suitable
+                        for the modern era.
+                    </p>
+                </div>
+                <div class="md:col-span-8 glass-panel rounded-4xl p-1">
+                    <div class="bg-zinc-900/50 rounded-[1.8rem] overflow-hidden">
+                        <div
+                            class="grid grid-cols-2 p-6 border-b border-zinc-800/50 text-xs font-semibold uppercase tracking-wider text-zinc-500">
+                            <div>Legacy Approach (BMAD)</div>
+                            <div class="text-brand-400">AIDF Approach</div>
+                        </div>
+                        <div class="divide-y divide-zinc-800/50 text-sm md:text-base">
+                            <div class="grid grid-cols-2 p-6 hover:bg-white/[0.02] transition-colors group">
+                                <div class="text-zinc-500 group-hover:text-zinc-400 transition-colors">CLI based
+                                    execution</div>
+                                <div class="text-zinc-200 font-medium">IDE Native</div>
+                            </div>
+                            <div class="grid grid-cols-2 p-6 hover:bg-white/[0.02] transition-colors group">
+                                <div class="text-zinc-500 group-hover:text-zinc-400 transition-colors">Document-first
+                                </div>
+                                <div class="text-zinc-200 font-medium">Code + Spec Co-Generation</div>
+                            </div>
+                            <div class="grid grid-cols-2 p-6 hover:bg-white/[0.02] transition-colors group">
+                                <div class="text-zinc-500 group-hover:text-zinc-400 transition-colors">External
+                                    Orchestration</div>
+                                <div class="text-zinc-200 font-medium">Built-in IDE Orchestration</div>
+                            </div>
+                            <div class="grid grid-cols-2 p-6 hover:bg-white/[0.02] transition-colors group">
+                                <div class="text-zinc-500 group-hover:text-zinc-400 transition-colors">Agile</div>
+                                <div class="text-zinc-200 font-medium font-bold text-brand-300">Flow-Driven Autonomous
+                                    Dev</div>
+                            </div>
+                            <div class="grid grid-cols-2 p-6 hover:bg-white/[0.02] transition-colors group">
+                                <div class="text-zinc-500 group-hover:text-zinc-400 transition-colors">Single Product
+                                </div>
+                                <div class="text-zinc-200 font-medium font-bold text-brand-300">Multi-Project IDE
+                                    Factory</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Agent Layers Grid -->
+        <section id="layers" class="scroll-mt-32">
+            <div class="text-center mb-20">
+                <h2 class="text-4xl font-bold text-white mb-6">The Agent Workforce</h2>
+                <p class="text-zinc-400 text-lg max-w-2xl mx-auto">Five specialized layers working in harmony to deliver
+                    production-grade software.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <!-- Layer 1 -->
+                <div
+                    class="glass-panel p-8 rounded-4xl hover:scale-[1.02] transition-transform duration-300 hover:bg-zinc-800/40 group">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-zinc-800 flex items-center justify-center mb-6 group-hover:bg-indigo-500/20 transition-colors">
+                        <span class="text-xl font-bold text-zinc-400 group-hover:text-indigo-300">1</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Cognitive Layer</h3>
+                    <p class="text-sm text-zinc-500 mb-6">Planning & Thinking</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-center text-sm text-zinc-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-zinc-600 mr-3"></span>Vision Agent <span
+                                class="text-zinc-500 text-xs ml-auto">Vision</span>
+                        </li>
+                        <li class="flex items-center text-sm text-zinc-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-zinc-600 mr-3"></span>Market Agent <span
+                                class="text-zinc-500 text-xs ml-auto">Scan</span>
+                        </li>
+                        <li class="flex items-center text-sm text-zinc-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-zinc-600 mr-3"></span>Requirement Agent <span
+                                class="text-zinc-500 text-xs ml-auto">PRD</span>
+                        </li>
+                        <li class="flex items-center text-sm text-zinc-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-zinc-600 mr-3"></span>UX Flow Agent <span
+                                class="text-zinc-500 text-xs ml-auto">Wireframes</span>
+                        </li>
+                        <li class="flex items-center text-sm text-zinc-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-zinc-600 mr-3"></span>Compliance Agent <span
+                                class="text-zinc-500 text-xs ml-auto">Legal</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Layer 2 -->
+                <div
+                    class="glass-panel p-8 rounded-4xl hover:scale-[1.02] transition-transform duration-300 hover:bg-zinc-800/40 group">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-zinc-800 flex items-center justify-center mb-6 group-hover:bg-blue-500/20 transition-colors">
+                        <span class="text-xl font-bold text-zinc-400 group-hover:text-blue-300">2</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Architecture Layer</h3>
+                    <p class="text-sm text-zinc-500 mb-6">Structure & Design</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-center text-sm text-zinc-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-zinc-600 mr-3"></span>System Architect
+                        </li>
+                        <li class="flex items-center text-sm text-zinc-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-zinc-600 mr-3"></span>API Architect
+                        </li>
+                        <li class="flex items-center text-sm text-zinc-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-zinc-600 mr-3"></span>Performance Arch
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Layer 3 -->
+                <div
+                    class="glass-panel p-8 rounded-4xl hover:scale-[1.02] transition-transform duration-300 hover:bg-zinc-800/40 group">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-zinc-800 flex items-center justify-center mb-6 group-hover:bg-brand-500/20 transition-colors">
+                        <span class="text-xl font-bold text-zinc-400 group-hover:text-brand-300">3</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Build Layer</h3>
+                    <p class="text-sm text-zinc-500 mb-6">Construction</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-center text-sm text-zinc-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-zinc-600 mr-3"></span>Feature Dev Agents
+                        </li>
+                        <li class="flex items-center text-sm text-zinc-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-zinc-600 mr-3"></span>UI Agents <span
+                                class="text-zinc-500 text-xs ml-auto">CSS/UI</span>
+                        </li>
+                        <li class="flex items-center text-sm text-zinc-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-zinc-600 mr-3"></span>DB Agents <span
+                                class="text-zinc-500 text-xs ml-auto">Migrations</span>
+                        </li>
+                        <li class="flex items-center text-sm text-zinc-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-zinc-600 mr-3"></span>Script Agents <span
+                                class="text-zinc-500 text-xs ml-auto">Cron/CLI</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Layer 4 -->
+                <div
+                    class="glass-panel p-8 rounded-4xl hover:scale-[1.02] transition-transform duration-300 hover:bg-zinc-800/40 group">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-zinc-800 flex items-center justify-center mb-6 group-hover:bg-amber-500/20 transition-colors">
+                        <span class="text-xl font-bold text-zinc-400 group-hover:text-amber-300">4</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Quality Layer</h3>
+                    <p class="text-sm text-zinc-500 mb-6">Assurance & Safety</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-center text-sm text-zinc-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-zinc-600 mr-3"></span>Test Agent <span
+                                class="text-zinc-500 text-xs ml-auto">Unit+E2E</span>
+                        </li>
+                        <li class="flex items-center text-sm text-zinc-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-zinc-600 mr-3"></span>Security Agent
+                        </li>
+                        <li class="flex items-center text-sm text-zinc-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-zinc-600 mr-3"></span>Lint Agent
+                        </li>
+                        <li class="flex items-center text-sm text-zinc-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-zinc-600 mr-3"></span>Refactor Agent <span
+                                class="text-zinc-500 text-xs ml-auto">Optimization</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Layer 5 -->
+                <div
+                    class="glass-panel p-8 rounded-4xl hover:scale-[1.02] transition-transform duration-300 hover:bg-zinc-800/40 group">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-zinc-800 flex items-center justify-center mb-6 group-hover:bg-rose-500/20 transition-colors">
+                        <span class="text-xl font-bold text-zinc-400 group-hover:text-rose-300">5</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Delivery Layer</h3>
+                    <p class="text-sm text-zinc-500 mb-6">Shipping</p>
+                    <ul class="space-y-3">
+                        <li class="flex items-center text-sm text-zinc-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-zinc-600 mr-3"></span>Doc Agent <span
+                                class="text-zinc-500 text-xs ml-auto">README+API</span>
+                        </li>
+                        <li class="flex items-center text-sm text-zinc-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-zinc-600 mr-3"></span>DevOps Agent <span
+                                class="text-zinc-500 text-xs ml-auto">Deploy</span>
+                        </li>
+                        <li class="flex items-center text-sm text-zinc-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-zinc-600 mr-3"></span>Monitor Agent <span
+                                class="text-zinc-500 text-xs ml-auto">Logs</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Technical Landscape -->
+        <section id="tech-spec" class="scroll-mt-32">
+            <div class="glass-panel rounded-[3rem] p-10 md:p-14 relative overflow-hidden group">
+                <div
+                    class="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[100px] -z-10 group-hover:bg-indigo-500/15 transition-colors duration-1000">
+                </div>
+
+                <div class="grid lg:grid-cols-2 gap-16">
+                    <div>
+                        <h2 class="text-3xl font-bold text-white mb-6">Technical Ecosystem</h2>
+
+                        <div class="space-y-6">
+                            <div
+                                class="bg-zinc-900/50 border border-zinc-800/50 rounded-3xl p-6 font-mono text-sm text-zinc-300">
+                                <div
+                                    class="text-zinc-500 mb-2 font-sans font-semibold text-xs tracking-wider uppercase">
+                                    Context Engine 🧬</div>
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <span class="text-indigo-400">decision</span>
+                                    <span class="text-zinc-600">→</span>
+                                    <span class="text-blue-400">component</span>
+                                    <span class="text-zinc-600">→</span>
+                                    <span class="text-brand-400">file</span>
+                                    <span class="text-zinc-600">→</span>
+                                    <span class="text-white">test</span>
+                                    <span class="text-zinc-600">→</span>
+                                    <span class="text-emerald-400">deployment</span>
+                                </div>
+                                <div class="mt-2 text-zinc-500 text-xs italic">Eliminates hallucination & loss of
+                                    memory.</div>
+                            </div>
+
+                            <div class="bg-zinc-900/50 border border-zinc-800/50 rounded-3xl p-6">
+                                <h3 class="text-white font-semibold mb-3">Core Engine Components</h3>
+                                <div class="grid grid-cols-2 gap-4 text-sm">
+                                    <div class="flex justify-between border-b border-zinc-800/50 pb-1"><span
+                                            class="text-zinc-300">Orchestrator</span><span class="text-zinc-500">Runs
+                                            flows</span></div>
+                                    <div class="flex justify-between border-b border-zinc-800/50 pb-1"><span
+                                            class="text-zinc-300">Memory Engine</span><span
+                                            class="text-zinc-500">Context</span></div>
+                                    <div class="flex justify-between border-b border-zinc-800/50 pb-1"><span
+                                            class="text-zinc-300">Task Router</span><span
+                                            class="text-zinc-500">Assignments</span></div>
+                                    <div class="flex justify-between border-b border-zinc-800/50 pb-1"><span
+                                            class="text-zinc-300">Artifact Mgr</span><span
+                                            class="text-zinc-500">Docs</span></div>
+                                    <div class="flex justify-between border-b border-zinc-800/50 pb-1"><span
+                                            class="text-zinc-300">Code Indexer</span><span
+                                            class="text-zinc-500">Repo</span></div>
+                                    <div class="flex justify-between border-b border-zinc-800/50 pb-1"><span
+                                            class="text-zinc-300">IDE Panel</span><span class="text-zinc-500">UI</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-8">
+                            <h4 class="text-sm font-bold text-zinc-500 uppercase tracking-widest mb-4">Flow System</h4>
+                            <div class="flex flex-wrap gap-2 text-xs font-mono text-zinc-400">
+                                <div class="bg-zinc-950 px-3 py-1.5 rounded-lg border border-zinc-800">Idea</div>
+                                <div class="text-zinc-700">➜</div>
+                                <div class="bg-zinc-950 px-3 py-1.5 rounded-lg border border-zinc-800">Vision</div>
+                                <div class="text-zinc-700">➜</div>
+                                <div class="bg-zinc-950 px-3 py-1.5 rounded-lg border border-zinc-800">PRD</div>
+                                <div class="text-zinc-700">➜</div>
+                                <div class="bg-zinc-950 px-3 py-1.5 rounded-lg border border-zinc-800">Arch</div>
+                                <div class="text-zinc-700">➜</div>
+                                <div class="bg-zinc-950 px-3 py-1.5 rounded-lg border border-zinc-800">Stories</div>
+                                <div class="text-zinc-700">➜</div>
+                                <div class="bg-zinc-950 px-3 py-1.5 rounded-lg border border-zinc-800">Code</div>
+                                <div class="text-zinc-700">➜</div>
+                                <div class="bg-zinc-950 px-3 py-1.5 rounded-lg border border-zinc-800">Test</div>
+                                <div class="text-zinc-700">➜</div>
+                                <div class="bg-zinc-950 px-3 py-1.5 rounded-lg border border-zinc-800 text-green-400">
+                                    Deploy</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div class="bg-zinc-950 rounded-3xl p-6 border border-zinc-800 shadow-inner">
+                            <div class="flex justify-between items-center mb-4">
+                                <div class="flex gap-2">
+                                    <div
+                                        class="w-3 h-3 rounded-full bg-red-500/20 text-red-500 flex items-center justify-center text-[8px]">
+                                        ●</div>
+                                    <div
+                                        class="w-3 h-3 rounded-full bg-yellow-500/20 text-yellow-500 flex items-center justify-center text-[8px]">
+                                        ●</div>
+                                    <div
+                                        class="w-3 h-3 rounded-full bg-green-500/20 text-green-500 flex items-center justify-center text-[8px]">
+                                        ●</div>
+                                </div>
+                                <span class="text-xs text-zinc-600 font-mono">folder_structure.tree</span>
+                            </div>
+                            <pre class="font-mono text-sm leading-relaxed overflow-x-auto text-zinc-300">
+<span class="text-zinc-600">/aidf</span>
+  <span class="text-zinc-700">├──</span> <span class="text-indigo-400">agents/</span>
+  <span class="text-zinc-700">│   ├──</span> vision.agent.yml
+  <span class="text-zinc-700">│   ├──</span> dev.agent.yml
+  <span class="text-zinc-700">│   └──</span> qa.agent.yml
+  <span class="text-zinc-700">├──</span> <span class="text-brand-400">flows/</span>
+  <span class="text-zinc-700">│   ├──</span> saas.flow.yml
+  <span class="text-zinc-700">│   └──</span> ecommerce.flow.yml
+  <span class="text-zinc-700">├──</span> <span class="text-amber-400">artifacts/</span>
+  <span class="text-zinc-700">│   ├──</span> prd.md
+  <span class="text-zinc-700">│   ├──</span> architecture.md
+  <span class="text-zinc-700">│   ├──</span> stories/
+  <span class="text-zinc-700">│   └──</span> builds/
+  <span class="text-zinc-700">└──</span> <span class="text-rose-400">memory/</span>
+      <span class="text-zinc-700">├──</span> project.graph.json
+      <span class="text-zinc-700">└──</span> decisions.log</pre>
+                        </div>
+
+                        <div class="bg-zinc-950 rounded-3xl p-6 border border-zinc-800 shadow-inner">
+                            <div class="flex justify-between items-center mb-4">
+                                <div class="text-xs text-zinc-600 font-mono">saas_flow.yml</div>
+                            </div>
+                            <pre class="font-mono text-sm leading-relaxed overflow-x-auto text-zinc-300">
+<span class="text-purple-400">name:</span> saas_flow
+<span class="text-purple-400">stages:</span>
+  - vision_agent
+  - market_agent
+  - requirement_agent
+  - ux_agent
+  - architect_agent
+  - story_agent
+  - dev_agent
+  - test_agent
+  - doc_agent
+  - deploy_agent</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Superiority Feature List -->
+        <section class="scroll-mt-32">
+            <h2 class="text-3xl font-bold text-white mb-10 text-center">Why It's Superior</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
+                <!-- 1 -->
+                <div class="glass-panel p-6 rounded-3xl flex items-center gap-4">
+                    <div class="w-8 h-8 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center">✔
+                    </div>
+                    <span class="text-zinc-300 font-medium">IDE Native</span>
+                </div>
+                <!-- 2 -->
+                <div class="glass-panel p-6 rounded-3xl flex items-center gap-4">
+                    <div class="w-8 h-8 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center">✔
+                    </div>
+                    <span class="text-zinc-300 font-medium">Multi-agent Team</span>
+                </div>
+                <!-- 3 -->
+                <div class="glass-panel p-6 rounded-3xl flex items-center gap-4">
+                    <div class="w-8 h-8 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center">✔
+                    </div>
+                    <span class="text-zinc-300 font-medium">Long-term Memory</span>
+                </div>
+                <!-- 4 -->
+                <div class="glass-panel p-6 rounded-3xl flex items-center gap-4">
+                    <div class="w-8 h-8 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center">✔
+                    </div>
+                    <span class="text-zinc-300 font-medium">Versioned Trails</span>
+                </div>
+                <!-- 5 -->
+                <div class="glass-panel p-6 rounded-3xl flex items-center gap-4">
+                    <div class="w-8 h-8 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center">✔
+                    </div>
+                    <span class="text-zinc-300 font-medium">Multi-Language</span>
+                </div>
+                <!-- 6 -->
+                <div class="glass-panel p-6 rounded-3xl flex items-center gap-4">
+                    <div class="w-8 h-8 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center">✔
+                    </div>
+                    <span class="text-zinc-300 font-medium">Full SaaS Gen</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Branding & Ending -->
+        <section class="text-center py-20">
+            <h2 class="text-sm font-bold text-zinc-500 uppercase tracking-widest mb-12">Product Branding</h2>
+            <div class="flex flex-wrap justify-center gap-4">
+                <span
+                    class="px-8 py-4 rounded-full bg-zinc-900 border border-zinc-800/50 text-white font-medium hover:bg-zinc-800 transition-colors cursor-default">AIDF
+                    Studio</span>
+                <span
+                    class="px-8 py-4 rounded-full bg-zinc-900 border border-zinc-800/50 text-white font-medium hover:bg-zinc-800 transition-colors cursor-default">DevForge
+                    AI</span>
+                <span
+                    class="px-8 py-4 rounded-full bg-zinc-900 border border-zinc-800/50 text-white font-medium hover:bg-zinc-800 transition-colors cursor-default">CodeGenesis</span>
+                <span
+                    class="px-8 py-4 rounded-full bg-brand-900/20 border border-brand-500/20 text-brand-300 font-medium hover:bg-brand-900/30 transition-colors cursor-default shadow-[0_0_30px_rgba(20,184,166,0.1)]">StackPilot</span>
+            </div>
+
+            <footer class="mt-32 text-zinc-600 text-sm font-medium">
+                Designed for the next generation of builders.
+            </footer>
+        </section>
+
+    </main>
+
+</body>
+
+</html>

@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIDF — Official Framework Specs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            200: '#99f6e4',
+                            300: '#5eead4',
+                            400: '#2dd4bf',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            900: '#134e4a',
+                        },
+                        zinc: {
+                            850: '#1f2023',
+                            900: '#18181b',
+                            950: '#09090b',
+                        }
+                    },
+                    borderRadius: {
+                        '4xl': '2rem',
+                        '5xl': '2.5rem',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'fade-in-up': 'fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-image:
+                radial-gradient(circle at 85% 10%, rgba(20, 184, 166, 0.05), transparent 25%),
+                radial-gradient(circle at 15% 90%, rgba(99, 102, 241, 0.05), transparent 25%);
+            background-attachment: fixed;
+        }
+
+        .glass-panel {
+            background: rgba(24, 24, 27, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            box-shadow:
+                0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                0 2px 4px -1px rgba(0, 0, 0, 0.06),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-glass {
+            background: rgba(9, 9, 11, 0.7);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .text-glow {
+            text-shadow: 0 0 20px rgba(20, 184, 166, 0.3);
+        }
+
+        /* Smooth custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #09090b;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #27272a;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3f3f46;
+        }
+
+        /* Table Styles */
+        td {
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+
+        tr:last-child td {
+            padding-bottom: 0;
+        }
+    </style>
+</head>
+
+<body class="bg-zinc-950 text-zinc-300 leading-relaxed antialiased selection:bg-brand-500/30 selection:text-brand-100">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 nav-glass transition-all duration-300">
+        <div class="max-w-6xl mx-auto px-6 h-20 flex justify-between items-center">
+            <a href="index.html" class="flex items-center space-x-3 group">
+                <div
+                    class="w-8 h-8 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center group-hover:bg-zinc-800 transition-colors">
+                    <svg class="w-4 h-4 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                </div>
+                <span class="text-sm font-semibold text-zinc-400 group-hover:text-white transition-colors">Back to
+                    Framework</span>
+            </a>
+            <div class="flex items-center space-x-3">
+                <span class="text-xl font-bold tracking-tight text-white">AIDF</span>
+                <span
+                    class="px-2 py-0.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-300 text-[10px] uppercase font-bold tracking-wider">Specs</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="pt-40 pb-20 px-6 relative">
+        <div class="max-w-4xl mx-auto text-center animate-fade-in-up">
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-6">Official Framework Specs</h1>
+            <p class="text-lg text-zinc-500">Technical specifications and architectural standards.</p>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-6 pb-32 space-y-24">
+
+        <!-- 1. System Classification -->
+        <section class="glass-panel p-10 rounded-4xl">
+            <h2 class="text-2xl font-bold text-white mb-8 flex items-center gap-3">
+                <span
+                    class="w-8 h-8 rounded-full bg-zinc-800 text-zinc-400 flex items-center justify-center text-sm">1</span>
+                System Classification
+            </h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm md:text-base">
+                    <tbody class="divide-y divide-zinc-800/50">
+                        <tr>
+                            <th class="py-4 text-zinc-500 font-medium w-1/3">System Type</th>
+                            <td class="py-4 text-zinc-200">IDE-Native Autonomous Development Framework</td>
+                        </tr>
+                        <tr>
+                            <th class="py-4 text-zinc-500 font-medium">Runtime Model</th>
+                            <td class="py-4 text-zinc-200">Event + Flow Orchestration</td>
+                        </tr>
+                        <tr>
+                            <th class="py-4 text-zinc-500 font-medium">Integration</th>
+                            <td class="py-4 text-zinc-200">VS Code / JetBrains IDEs</td>
+                        </tr>
+                        <tr>
+                            <th class="py-4 text-zinc-500 font-medium">Architecture</th>
+                            <td class="py-4 text-zinc-200">Modular Micro-Agent System</td>
+                        </tr>
+                        <tr>
+                            <th class="py-4 text-zinc-500 font-medium">Memory Model</th>
+                            <td class="py-4 text-zinc-200">Persistent Graph Memory</td>
+                        </tr>
+                        <tr>
+                            <th class="py-4 text-zinc-500 font-medium">Artifact System</th>
+                            <td class="py-4 text-zinc-200">Versioned Spec + Code</td>
+                        </tr>
+                        <tr>
+                            <th class="py-4 text-zinc-500 font-medium">Deployment Model</th>
+                            <td class="py-4 text-zinc-200">Local + Cloud Hybrid</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 2. Core Engine Specs -->
+        <section class="glass-panel p-10 rounded-4xl">
+            <h2 class="text-2xl font-bold text-white mb-8 flex items-center gap-3">
+                <span
+                    class="w-8 h-8 rounded-full bg-zinc-800 text-zinc-400 flex items-center justify-center text-sm">2</span>
+                Core Engine Specs
+            </h2>
+            <div class="grid md:grid-cols-2 gap-x-12 gap-y-6">
+                <div class="flex justify-between border-b border-zinc-800/50 pb-2">
+                    <span class="text-zinc-200 font-medium">Flow Orchestrator</span>
+                    <span class="text-zinc-500 text-right">Runs full pipelines</span>
+                </div>
+                <div class="flex justify-between border-b border-zinc-800/50 pb-2">
+                    <span class="text-zinc-200 font-medium">Agent Router</span>
+                    <span class="text-zinc-500 text-right">Assigns tasks</span>
+                </div>
+                <div class="flex justify-between border-b border-zinc-800/50 pb-2">
+                    <span class="text-zinc-200 font-medium">Memory Graph Engine</span>
+                    <span class="text-zinc-500 text-right">Context & decisions</span>
+                </div>
+                <div class="flex justify-between border-b border-zinc-800/50 pb-2">
+                    <span class="text-zinc-200 font-medium">Artifact Vault</span>
+                    <span class="text-zinc-500 text-right">Versioned docs</span>
+                </div>
+                <div class="flex justify-between border-b border-zinc-800/50 pb-2">
+                    <span class="text-zinc-200 font-medium">Repo Indexer</span>
+                    <span class="text-zinc-500 text-right">Map dependencies</span>
+                </div>
+                <div class="flex justify-between border-b border-zinc-800/50 pb-2">
+                    <span class="text-zinc-200 font-medium">Event Bus</span>
+                    <span class="text-zinc-500 text-right">Triggers & actions</span>
+                </div>
+                <div class="flex justify-between border-b border-zinc-800/50 pb-2">
+                    <span class="text-zinc-200 font-medium">Security Sandbox</span>
+                    <span class="text-zinc-500 text-right">Permission control</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Agent Execution Model -->
+        <section class="glass-panel p-10 rounded-4xl">
+            <h2 class="text-2xl font-bold text-white mb-8 flex items-center gap-3">
+                <span
+                    class="w-8 h-8 rounded-full bg-zinc-800 text-zinc-400 flex items-center justify-center text-sm">3</span>
+                Agent Execution Model
+            </h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm md:text-base">
+                    <tbody class="divide-y divide-zinc-800/50">
+                        <tr>
+                            <th class="py-4 text-zinc-500 font-medium w-1/3">Execution Type</th>
+                            <td class="py-4 text-zinc-200">Stateless Agents + Stateful Memory</td>
+                        </tr>
+                        <tr>
+                            <th class="py-4 text-zinc-500 font-medium">Communication</th>
+                            <td class="py-4 text-zinc-200">Artifact-Driven</td>
+                        </tr>
+                        <tr>
+                            <th class="py-4 text-zinc-500 font-medium">Agent Format</th>
+                            <td class="py-4 text-zinc-200">YAML-defined</td>
+                        </tr>
+                        <tr>
+                            <th class="py-4 text-zinc-500 font-medium">Permission Model</th>
+                            <td class="py-4 text-zinc-200">RBAC</td>
+                        </tr>
+                        <tr>
+                            <th class="py-4 text-zinc-500 font-medium">Context Inheritance</th>
+                            <td class="py-4 text-zinc-200">Memory Graph</td>
+                        </tr>
+                        <tr>
+                            <th class="py-4 text-zinc-500 font-medium">Determinism</th>
+                            <td class="py-4 text-zinc-200">Reproducible Builds</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 4. Flow Spec -->
+        <section class="glass-panel p-10 rounded-4xl">
+            <h2 class="text-2xl font-bold text-white mb-8 flex items-center gap-3">
+                <span
+                    class="w-8 h-8 rounded-full bg-zinc-800 text-zinc-400 flex items-center justify-center text-sm">4</span>
+                Flow Spec Format
+            </h2>
+            <div class="grid lg:grid-cols-2 gap-10">
+                <div class="bg-zinc-950 rounded-2xl p-6 border border-zinc-800 shadow-inner">
+                    <pre class="font-mono text-sm leading-relaxed overflow-x-auto text-zinc-300">
+<span class="text-purple-400">flow_name:</span> ecommerce_flow
+<span class="text-purple-400">entry:</span> vision_agent
+<span class="text-purple-400">stages:</span>
+  - market_agent
+  - prd_agent
+  - ux_agent
+  - architect_agent
+  - story_agent
+  - dev_agent
+  - test_agent
+  - deploy_agent</pre>
+                </div>
+                <div class="flex flex-col justify-center space-y-6">
+                    <div class="flex justify-between border-b border-zinc-800/50 pb-2">
+                        <span class="text-zinc-500 font-medium">Format</span>
+                        <span class="text-zinc-200">YAML</span>
+                    </div>
+                    <div class="flex justify-between border-b border-zinc-800/50 pb-2">
+                        <span class="text-zinc-500 font-medium">Flow Types</span>
+                        <span class="text-zinc-200">SaaS, CMS, ERP, Plugin, App</span>
+                    </div>
+                    <div class="flex justify-between border-b border-zinc-800/50 pb-2">
+                        <span class="text-zinc-500 font-medium">Trigger</span>
+                        <span class="text-zinc-200">Manual / Git Event / Scheduler</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Memory Graph -->
+        <section class="glass-panel p-10 rounded-4xl">
+            <h2 class="text-2xl font-bold text-white mb-8 flex items-center gap-3">
+                <span
+                    class="w-8 h-8 rounded-full bg-zinc-800 text-zinc-400 flex items-center justify-center text-sm">5</span>
+                Memory Graph Spec
+            </h2>
+            <div class="flex flex-wrap gap-3 mb-8">
+                <span
+                    class="px-4 py-2 rounded-full bg-zinc-900 border border-zinc-800 text-sm text-zinc-300">Decision</span>
+                <span class="text-zinc-600 self-center">→</span>
+                <span
+                    class="px-4 py-2 rounded-full bg-zinc-900 border border-zinc-800 text-sm text-zinc-300">Component</span>
+                <span class="text-zinc-600 self-center">→</span>
+                <span
+                    class="px-4 py-2 rounded-full bg-zinc-900 border border-zinc-800 text-sm text-zinc-300">File</span>
+                <span class="text-zinc-600 self-center">→</span>
+                <span
+                    class="px-4 py-2 rounded-full bg-zinc-900 border border-zinc-800 text-sm text-zinc-300">Test</span>
+                <span class="text-zinc-600 self-center">→</span>
+                <span
+                    class="px-4 py-2 rounded-full bg-zinc-900 border border-zinc-800 text-sm text-zinc-300">Build</span>
+                <span class="text-zinc-600 self-center">→</span>
+                <span
+                    class="px-4 py-2 rounded-full bg-zinc-900 border border-zinc-800 text-sm text-zinc-300">Deployment</span>
+            </div>
+            <div class="grid md:grid-cols-2 gap-4 text-sm mt-8 pt-8 border-t border-zinc-800/50">
+                <div class="text-zinc-500">Node Types:</div>
+                <div class="col-span-2 grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <div class="text-zinc-300"><strong class="text-white block font-medium">Decision</strong> Design
+                        choice</div>
+                    <div class="text-zinc-300"><strong class="text-white block font-medium">Artifact</strong> PRD, Spec
+                    </div>
+                    <div class="text-zinc-300"><strong class="text-white block font-medium">File</strong> Source files
+                    </div>
+                    <div class="text-zinc-300"><strong class="text-white block font-medium">Test</strong> Test cases
+                    </div>
+                    <div class="text-zinc-300"><strong class="text-white block font-medium">Deployment</strong> Build &
+                        release</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6 & 7. Vault & Integration -->
+        <div class="grid lg:grid-cols-2 gap-8">
+            <section class="glass-panel p-10 rounded-4xl">
+                <h2 class="text-xl font-bold text-white mb-6">6. Artifact Vault</h2>
+                <ul class="space-y-4 text-sm">
+                    <li class="flex justify-between items-center"><span class="text-zinc-400">Vision</span> <span
+                            class="px-3 py-1 rounded bg-zinc-900 border border-zinc-800 text-xs font-mono text-zinc-300">Markdown</span>
+                    </li>
+                    <li class="flex justify-between items-center"><span class="text-zinc-400">PRD</span> <span
+                            class="px-3 py-1 rounded bg-zinc-900 border border-zinc-800 text-xs font-mono text-zinc-300">Markdown</span>
+                    </li>
+                    <li class="flex justify-between items-center"><span class="text-zinc-400">Architecture</span> <span
+                            class="px-3 py-1 rounded bg-zinc-900 border border-zinc-800 text-xs font-mono text-zinc-300">MD
+                            + Diagrams</span></li>
+                    <li class="flex justify-between items-center"><span class="text-zinc-400">Stories</span> <span
+                            class="px-3 py-1 rounded bg-zinc-900 border border-zinc-800 text-xs font-mono text-zinc-300">YAML</span>
+                    </li>
+                    <li class="flex justify-between items-center"><span class="text-zinc-400">Docs</span> <span
+                            class="px-3 py-1 rounded bg-zinc-900 border border-zinc-800 text-xs font-mono text-zinc-300">Markdown</span>
+                    </li>
+                    <li class="flex justify-between items-center"><span class="text-zinc-400">Change Logs</span> <span
+                            class="px-3 py-1 rounded bg-zinc-900 border border-zinc-800 text-xs font-mono text-zinc-300">JSON</span>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="glass-panel p-10 rounded-4xl">
+                <h2 class="text-xl font-bold text-white mb-6">7. IDE Integration</h2>
+                <ul class="space-y-4 text-sm">
+                    <li class="flex justify-between items-center"><span class="text-zinc-400">IDE Panel</span> <span
+                            class="font-medium text-zinc-200">React-based</span></li>
+                    <li class="flex justify-between items-center"><span class="text-zinc-400">Commands</span> <span
+                            class="font-medium text-zinc-200">Flow Run, Agent Run</span></li>
+                    <li class="flex justify-between items-center"><span class="text-zinc-400">Live Context View</span>
+                        <span class="font-medium text-zinc-200">Memory Graph UI</span>
+                    </li>
+                    <li class="flex justify-between items-center"><span class="text-zinc-400">Agent Chat</span> <span
+                            class="font-medium text-zinc-200">Inline per file</span></li>
+                    <li class="flex justify-between items-center"><span class="text-zinc-400">Artifact Editor</span>
+                        <span class="font-medium text-zinc-200">Markdown UI</span>
+                    </li>
+                    <li class="flex justify-between items-center"><span class="text-zinc-400">Build Panel</span> <span
+                            class="font-medium text-zinc-200">Logs & status</span></li>
+                </ul>
+            </section>
+        </div>
+
+        <!-- 8, 9, 10. Security, Stack, Modes -->
+        <div class="grid lg:grid-cols-3 gap-8">
+            <section class="glass-panel p-8 rounded-[2rem]">
+                <h3 class="text-lg font-bold text-white mb-4">8. Security</h3>
+                <ul class="space-y-3 text-sm">
+                    <li class="flex justify-between"><span class="text-zinc-500">Model</span> <span
+                            class="text-zinc-300">RBAC</span></li>
+                    <li class="flex justify-between"><span class="text-zinc-500">Sandbox</span> <span
+                            class="text-zinc-300">File-level</span></li>
+                    <li class="flex justify-between"><span class="text-zinc-500">Audit</span> <span
+                            class="text-zinc-300">Immutable</span></li>
+                    <li class="flex justify-between"><span class="text-zinc-500">Vault</span> <span
+                            class="text-zinc-300">Encrypted</span></li>
+                </ul>
+            </section>
+
+            <section class="glass-panel p-8 rounded-[2rem]">
+                <h3 class="text-lg font-bold text-white mb-4">9. Supported Stacks</h3>
+                <div class="flex flex-wrap gap-2">
+                    <span
+                        class="px-3 py-1 rounded-full bg-brand-900/20 text-brand-300 border border-brand-500/20 text-xs font-medium">PHP</span>
+                    <span
+                        class="px-3 py-1 rounded-full bg-brand-900/20 text-brand-300 border border-brand-500/20 text-xs font-medium">JavaScript</span>
+                    <span
+                        class="px-3 py-1 rounded-full bg-brand-900/20 text-brand-300 border border-brand-500/20 text-xs font-medium">Python</span>
+                    <span
+                        class="px-3 py-1 rounded-full bg-brand-900/20 text-brand-300 border border-brand-500/20 text-xs font-medium">Node</span>
+                    <span
+                        class="px-3 py-1 rounded-full bg-brand-900/20 text-brand-300 border border-brand-500/20 text-xs font-medium">WordPress</span>
+                    <span
+                        class="px-3 py-1 rounded-full bg-brand-900/20 text-brand-300 border border-brand-500/20 text-xs font-medium">Laravel</span>
+                    <span
+                        class="px-3 py-1 rounded-full bg-brand-900/20 text-brand-300 border border-brand-500/20 text-xs font-medium">SaaS</span>
+                </div>
+            </section>
+
+            <section class="glass-panel p-8 rounded-[2rem]">
+                <h3 class="text-lg font-bold text-white mb-4">10. Dev Modes</h3>
+                <ul class="space-y-3 text-sm">
+                    <li class="flex justify-between"><span class="text-zinc-300">Assisted</span> <span
+                            class="text-zinc-500 text-xs">Suggest only</span></li>
+                    <li class="flex justify-between"><span class="text-zinc-300">Semi-Auto</span> <span
+                            class="text-zinc-500 text-xs">Modules</span></li>
+                    <li class="flex justify-between"><span class="text-zinc-300">Full-Auto</span> <span
+                            class="text-zinc-500 text-xs">Full apps</span></li>
+                    <li class="flex justify-between"><span class="text-zinc-300">Guardian</span> <span
+                            class="text-zinc-500 text-xs">Security / QA</span></li>
+                </ul>
+            </section>
+        </div>
+
+        <!-- 11, 12, 13. Pipeline, Traceability, Product -->
+        <section class="glass-panel p-10 rounded-4xl">
+            <h2 class="text-xl font-bold text-white mb-8">Additional Specs</h2>
+            <div class="grid md:grid-cols-3 gap-12">
+                <div>
+                    <h4 class="text-sm font-bold text-zinc-500 uppercase tracking-widest mb-4">11. Build Pipeline</h4>
+                    <ul class="space-y-2 text-sm text-zinc-300">
+                        <li><strong class="text-white">Lint:</strong> ESLint / PHPCS</li>
+                        <li><strong class="text-white">Test:</strong> PHPUnit / Playwright</li>
+                        <li><strong class="text-white">Package:</strong> Docker</li>
+                        <li><strong class="text-white">Deploy:</strong> VPS / Cloud / Shared</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-sm font-bold text-zinc-500 uppercase tracking-widest mb-4">12. Traceability</h4>
+                    <ul class="space-y-2 text-sm text-zinc-300">
+                        <li class="flex items-center gap-2">
+                            <div
+                                class="w-4 h-4 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center text-[10px]">
+                                ✔</div> Decisions versioned
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <div
+                                class="w-4 h-4 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center text-[10px]">
+                                ✔</div> Rollback types
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <div
+                                class="w-4 h-4 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center text-[10px]">
+                                ✔</div> Reproducible builds
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <div
+                                class="w-4 h-4 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center text-[10px]">
+                                ✔</div> Compliance audit
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-sm font-bold text-zinc-500 uppercase tracking-widest mb-4">13. Product Position</h4>
+                    <ul class="space-y-2 text-sm text-zinc-300">
+                        <li class="font-medium text-white">Developer Edition <span
+                                class="block text-xs font-normal text-zinc-500">IDE plugin</span></li>
+                        <li class="font-medium text-white">Studio Edition <span
+                                class="block text-xs font-normal text-zinc-500">Local automation</span></li>
+                        <li class="font-medium text-white">Enterprise <span
+                                class="block text-xs font-normal text-zinc-500">Multi-team AI factory</span></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center py-12 border-t border-zinc-800/50">
+            <p class="text-zinc-500 mb-4">AIDF — Full autonomous software factory.</p>
+            <p class="text-xs text-zinc-600 font-mono">ID: kw92-spec-v1.0.0</p>
+        </footer>
+
+    </main>
+</body>
+
+</html>
